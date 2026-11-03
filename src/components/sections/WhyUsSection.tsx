@@ -1,6 +1,7 @@
 import React from 'react';
 import { ShieldCheck, CheckCircle2, Cpu, Zap } from 'lucide-react';
 import { SectionHeader } from '../common/SectionHeader';
+import { LiquidCard } from '../common/LiquidCard';
 import { DIFFERENTIATORS_DATA } from '../../data/differentiators';
 
 const iconMap: Record<string, React.ElementType> = {
@@ -24,15 +25,15 @@ export const WhyUsSection: React.FC = () => {
           className="mb-16 sm:mb-20"
         />
 
-        {/* 4 Differentiators Grid */}
+        {/* 4 Differentiators Grid with Liquid Cards */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 sm:gap-8">
           {DIFFERENTIATORS_DATA.map((diff) => {
             const Icon = iconMap[diff.icon] || ShieldCheck;
 
             return (
-              <div
+              <LiquidCard
                 key={diff.number}
-                className="liquid-glass-card p-8 rounded-3xl flex flex-col justify-between group hover:border-brand-red/40 shadow-liquid-sm hover:shadow-liquid-md transition-all duration-300"
+                className="p-8 flex flex-col justify-between group"
               >
                 <div>
                   {/* Top Bar: Number & Icon */}
@@ -61,7 +62,7 @@ export const WhyUsSection: React.FC = () => {
                   <span>Standard Standard</span>
                   <span className="text-brand-red font-bold">100% Adherence</span>
                 </div>
-              </div>
+              </LiquidCard>
             );
           })}
         </div>

@@ -282,3 +282,4 @@ export const TechEcosystemSection: React.FC = () => {
     </section>
   );
 };
+

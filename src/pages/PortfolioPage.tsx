@@ -1,10 +1,13 @@
 import React, { useState } from 'react';
-import { ArrowUpRight, CheckCircle2, Clock, Filter } from 'lucide-react';
+import { ArrowUpRight, CheckCircle2, Clock, X, Layers, Shield, Cpu } from 'lucide-react';
 import { SectionHeader } from '../components/common/SectionHeader';
+import { LiquidCard } from '../components/common/LiquidCard';
 import { PROJECTS_DATA } from '../data/projects';
+import { ProjectItem } from '../types';
 
 export const PortfolioPage: React.FC = () => {
   const [activeCategory, setActiveCategory] = useState<string>('all');
+  const [selectedProject, setSelectedProject] = useState<ProjectItem | null>(null);
 
   const categories = [
     { id: 'all', label: 'All Projects' },
@@ -19,11 +22,14 @@ export const PortfolioPage: React.FC = () => {
     : PROJECTS_DATA.filter((p) => p.category === activeCategory);
 
   return (
-    <div className="pt-32 pb-24 bg-ivory">
+    <div className="pt-32 pb-24 bg-ivory overflow-hidden relative canvas-soft-lines">
+      {/* Background ambient liquid glow */}
+      <div className="absolute top-1/4 right-0 w-96 h-96 bg-brand-red/8 rounded-full blur-[140px] pointer-events-none" />
+
       {/* Header */}
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mb-12">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mb-12 relative z-10">
         <SectionHeader
-          badgeText="ENGINEERED SYSTEMS"
+          badgeText="ENGINEERED SYSTEMS // PORTFOLIO"
           title="Our Work & Production"
           titleHighlight="Architectures."
           description="Explore our delivered systems across web platforms, mobile solutions, CRM engines, and IoT telemetry architectures. All client confidentiality is strictly honored."
@@ -47,13 +53,14 @@ export const PortfolioPage: React.FC = () => {
         </div>
       </div>
 
-      {/* Projects Grid */}
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      {/* Projects Grid with Liquid Cards */}
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
           {filteredProjects.map((project) => (
-            <div
+            <LiquidCard
               key={project.id}
-              className="liquid-glass-card rounded-3xl flex flex-col justify-between group overflow-hidden border border-softgrey hover:border-brand-red/40 shadow-liquid-sm hover:shadow-liquid-md transition-all duration-300"
+              onClick={() => setSelectedProject(project)}
+              className="flex flex-col justify-between group overflow-hidden border border-softgrey hover:border-brand-red/40 cursor-pointer"
             >
               <div>
                 {/* Project Image Frame */}
@@ -99,7 +106,7 @@ export const PortfolioPage: React.FC = () => {
                     {project.title}
                   </h3>
 
-                  <p className="mt-3 text-xs sm:text-sm text-body-text leading-relaxed">
+                  <p className="mt-3 text-xs sm:text-sm text-body-text leading-relaxed line-clamp-3">
                     {project.description}
                   </p>
 
@@ -126,25 +133,83 @@ export const PortfolioPage: React.FC = () => {
                   </span>
                 </div>
 
-                <a
-                  href="/contact"
-                  className="inline-flex items-center gap-1.5 text-xs font-semibold text-graphite hover:text-brand-red transition-colors"
-                >
-                  <span>Request Walkthrough</span>
+                <div className="inline-flex items-center gap-1.5 text-xs font-semibold text-graphite group-hover:text-brand-red transition-colors">
+                  <span>Inspect Case</span>
                   <ArrowUpRight className="w-3.5 h-3.5 text-brand-red" />
-                </a>
+                </div>
               </div>
-            </div>
+            </LiquidCard>
           ))}
         </div>
 
         {/* Confidentiality Notice */}
-        <div className="mt-16 p-6 rounded-2xl liquid-glass-card border border-softgrey text-center">
+        <div className="mt-16 p-6 rounded-2xl liquid-glass-chip border border-softgrey text-center">
           <p className="text-xs text-body-muted font-mono">
             * Note on Client Confidentiality: Select enterprise systems and high-throughput financial architectures are omitted or anonymized in compliance with mutual nondisclosure agreements.
           </p>
         </div>
       </div>
+
+      {/* Interactive Liquid Glass Case Study Modal */}
+      {selectedProject && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-6 bg-black/60 backdrop-blur-md animate-in fade-in duration-300">
+          <div className="relative w-full max-w-2xl liquid-glass-card bg-white/95 rounded-3xl p-8 sm:p-10 border border-white shadow-2xl overflow-hidden max-h-[90vh] overflow-y-auto">
+            {/* Close Button */}
+            <button
+              onClick={() => setSelectedProject(null)}
+              className="absolute top-6 right-6 p-2 rounded-full liquid-glass-chip hover:bg-black/5 text-graphite transition-colors"
+              aria-label="Close modal"
+            >
+              <X className="w-5 h-5" />
+            </button>
+
+            <span className="text-xs font-mono font-bold text-brand-red uppercase tracking-widest block mb-2">
+              {selectedProject.client} // {selectedProject.year}
+            </span>
+
+            <h3 className="font-display text-2xl sm:text-3xl font-extrabold text-graphite mb-4">
+              {selectedProject.title}
+            </h3>
+
+            <div className="rounded-2xl overflow-hidden mb-6 h-64 bg-softgrey">
+              <img
+                src={selectedProject.image}
+                alt={selectedProject.title}
+                className="w-full h-full object-cover"
+              />
+            </div>
+
+            <p className="text-sm sm:text-base text-body-text leading-relaxed mb-6">
+              {selectedProject.description}
+            </p>
+
+            <div className="p-4 rounded-2xl bg-ivory border border-softgrey mb-6 flex items-center justify-between">
+              <span className="text-xs font-mono font-bold text-body-muted uppercase">Verified Metric:</span>
+              <span className="font-display text-base font-bold text-brand-red">{selectedProject.metrics}</span>
+            </div>
+
+            <h5 className="font-mono text-xs font-bold text-graphite uppercase tracking-wider mb-3">
+              Technologies Utilized:
+            </h5>
+            <div className="flex flex-wrap gap-2 mb-8">
+              {selectedProject.tags.map((t) => (
+                <span key={t} className="px-3 py-1 rounded-xl text-xs font-mono bg-black/[0.04] text-graphite border border-softgrey">
+                  {t}
+                </span>
+              ))}
+            </div>
+
+            <div className="flex gap-4">
+              <a
+                href="/contact"
+                className="w-full text-center py-3.5 rounded-2xl bg-brand-red hover:bg-brand-red-light text-white font-bold text-sm shadow-liquid-red transition-all"
+              >
+                Inquire About Similar Architecture
+              </a>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

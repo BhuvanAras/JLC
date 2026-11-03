@@ -2,6 +2,7 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import { Globe, Layers, Smartphone, TrendingUp, Users, Compass, ArrowRight } from 'lucide-react';
 import { SectionHeader } from '../common/SectionHeader';
+import { LiquidCard } from '../common/LiquidCard';
 import { SERVICES_DATA } from '../../data/services';
 
 const iconMap: Record<string, React.ElementType> = {
@@ -36,16 +37,16 @@ export const ServicesSection: React.FC = () => {
           </Link>
         </div>
 
-        {/* 6 Interactive Service Cards Grid */}
+        {/* 6 Interactive Liquid Service Cards Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8">
           {SERVICES_DATA.map((service, index) => {
             const Icon = iconMap[service.iconName] || Globe;
             const primaryMetric = service.metrics[0];
 
             return (
-              <div
+              <LiquidCard
                 key={service.id}
-                className="liquid-glass-card p-8 sm:p-9 rounded-3xl flex flex-col justify-between group hover:border-brand-red/40 transition-all duration-300"
+                className="p-8 sm:p-9 flex flex-col justify-between group"
               >
                 <div>
                   {/* Top Bar: Icon + Index */}
@@ -107,7 +108,7 @@ export const ServicesSection: React.FC = () => {
                     <ArrowRight className="w-3.5 h-3.5" />
                   </Link>
                 </div>
-              </div>
+              </LiquidCard>
             );
           })}
         </div>
