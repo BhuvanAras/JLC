@@ -39,3 +39,4 @@ export const LiquidStatPill: React.FC<LiquidStatPillProps> = ({
     </div>
   );
 };
+

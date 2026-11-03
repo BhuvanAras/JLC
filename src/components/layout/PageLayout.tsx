@@ -2,7 +2,6 @@ import React, { useEffect } from 'react';
 import { useLocation } from 'react-router-dom';
 import { Navbar } from './Navbar';
 import { Footer } from './Footer';
-import { LiquidCursor } from '../common/LiquidCursor';
 
 interface PageLayoutProps {
   children: React.ReactNode;
@@ -17,9 +16,6 @@ export const PageLayout: React.FC<PageLayoutProps> = ({ children }) => {
 
   return (
     <div className="min-h-screen flex flex-col bg-ivory text-graphite antialiased selection:bg-brand-red selection:text-white relative">
-      {/* Interactive Liquid Refraction Cursor Lens */}
-      <LiquidCursor />
-
       {/* Floating Liquid-Glass Navbar */}
       <Navbar />
 

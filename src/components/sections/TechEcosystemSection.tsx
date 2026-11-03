@@ -1,5 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react';
-import { Cpu, Sparkles, Activity, Layers, Zap } from 'lucide-react';
+import React, { useEffect, useRef } from 'react';
 import { SectionHeader } from '../common/SectionHeader';
 
 interface TechChip {
@@ -30,14 +29,10 @@ export const TechEcosystemSection: React.FC = () => {
   const containerRef = useRef<HTMLDivElement>(null);
   const chipRefs = useRef<(HTMLDivElement | null)[]>([]);
 
-  // Telemetry state for UI feedback
-  const [velocityTelemetry, setVelocityTelemetry] = useState({ speed: 0, mode: 'Equilibrium' });
-
   useEffect(() => {
     const container = containerRef.current;
     if (!container) return;
 
-    // Physics state for each chip
     const chipsState = VERIFIED_TECHNOLOGIES.map((_, i) => ({
       x: 0,
       y: 0,
@@ -66,12 +61,10 @@ export const TechEcosystemSection: React.FC = () => {
         prevMouseY = currentY;
       }
 
-      // Calculate instantaneous pointer velocity
       const vx = currentX - prevMouseX;
       const vy = currentY - prevMouseY;
       const instantSpeed = Math.hypot(vx, vy);
 
-      // Exponential smoothing on velocity
       smoothedSpeed = smoothedSpeed * 0.75 + instantSpeed * 0.25;
 
       mouseX = currentX;
@@ -93,27 +86,12 @@ export const TechEcosystemSection: React.FC = () => {
     container.addEventListener('mousemove', handleMouseMove);
     container.addEventListener('mouseleave', handleMouseLeave);
 
-    // Continuous 60/120fps physics simulation loop
     let lastTime = performance.now();
-    let telemetryThrottle = 0;
 
     const tick = (now: number) => {
-      const dt = Math.min((now - lastTime) / 1000, 0.05);
       lastTime = now;
       const t = now * 0.001;
-
-      // Natural speed decay if mouse stopped
       smoothedSpeed *= 0.94;
-
-      // Update telemetry reading periodically
-      telemetryThrottle++;
-      if (telemetryThrottle % 6 === 0) {
-        const roundedSpeed = Math.round(smoothedSpeed * 10);
-        setVelocityTelemetry({
-          speed: roundedSpeed,
-          mode: roundedSpeed > 35 ? 'High Repulsion Active' : roundedSpeed > 8 ? 'Fluid Drift' : 'Equilibrium'
-        });
-      }
 
       chipsState.forEach((state, i) => {
         const el = chipRefs.current[i];
@@ -122,7 +100,6 @@ export const TechEcosystemSection: React.FC = () => {
         const elRect = el.getBoundingClientRect();
         const containerRect = container.getBoundingClientRect();
         
-        // Chip center relative to container
         const chipCenterX = (elRect.left - containerRect.left) + elRect.width / 2;
         const chipCenterY = (elRect.top - containerRect.top) + elRect.height / 2;
 
@@ -134,7 +111,6 @@ export const TechEcosystemSection: React.FC = () => {
           const dy = chipCenterY - mouseY;
           const dist = Math.hypot(dx, dy) || 1;
 
-          // Dynamic repulsion radius scales with velocity: faster sweep = wider wave
           const baseRadius = 140;
           const dynamicRadius = baseRadius + Math.min(smoothedSpeed * 5, 200);
 
@@ -143,24 +119,20 @@ export const TechEcosystemSection: React.FC = () => {
             const ny = dy / dist;
             const proximity = 1 - (dist / dynamicRadius);
 
-            // Force equation: high velocity multiplies repulsive impulse
             const velocityMultiplier = Math.min(smoothedSpeed * 0.8, 30);
             const forceMagnitude = (proximity * 8) + (proximity * proximity * velocityMultiplier * 1.8);
 
             fx += nx * forceMagnitude * 12;
             fy += ny * forceMagnitude * 12;
 
-            // Natural 3D card tilt along repulsion angle
             state.rx = -ny * proximity * 18;
             state.ry = nx * proximity * 18;
           }
         }
 
-        // Restoring Spring Physics: pulls back to origin (0, 0)
         const springK = 0.06;
         const damping = 0.85;
 
-        // If not being hovered or on touch, add gentle organic autonomous drift
         if (!isInside || smoothedSpeed < 2) {
           const driftX = Math.sin(t * 1.2 + state.phase) * 6;
           const driftY = Math.cos(t * 0.9 + state.phase) * 6;
@@ -177,11 +149,9 @@ export const TechEcosystemSection: React.FC = () => {
         state.x += state.vx;
         state.y += state.vy;
 
-        // Damped rotation decay
         state.rx *= 0.9;
         state.ry *= 0.9;
 
-        // Apply high-performance 3D matrix transform
         el.style.transform = `translate3d(${state.x.toFixed(2)}px, ${state.y.toFixed(2)}px, 0px) rotateX(${state.rx.toFixed(2)}deg) rotateY(${state.ry.toFixed(2)}deg)`;
       });
 
@@ -205,31 +175,13 @@ export const TechEcosystemSection: React.FC = () => {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
         
         {/* Section Header */}
-        <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-16">
+        <div className="mb-16">
           <SectionHeader
             badgeText="02 // INTERACTIVE ECOSYSTEM"
             title="The Technology Core:"
             titleHighlight="Powered by Mouse-Velocity Physics."
             description="Interact with JL Corp’s verified technology stack below. Move your cursor gently for slow drift, or sweep rapidly across the field to unleash elastic repulsion waves."
           />
-
-          {/* Interactive Velocity HUD */}
-          <div className="liquid-glass-card px-5 py-3 rounded-2xl flex items-center gap-4 self-start md:self-end shrink-0 shadow-liquid-sm">
-            <div className="flex items-center gap-2">
-              <Activity className="w-4 h-4 text-brand-red animate-pulse" />
-              <span className="font-mono text-xs font-bold text-graphite uppercase tracking-wider">
-                Velocity Radar
-              </span>
-            </div>
-            <div className="h-4 w-[1px] bg-softgrey" />
-            <div className="flex items-center gap-3 text-xs font-mono">
-              <span className="text-body-muted">Speed:</span>
-              <span className="font-bold text-brand-red min-w-[50px]">{velocityTelemetry.speed} px/s</span>
-              <span className="px-2 py-0.5 rounded-full bg-black/[0.04] text-[10px] text-graphite font-semibold">
-                {velocityTelemetry.mode}
-              </span>
-            </div>
-          </div>
         </div>
 
         {/* The Physics Playground Container */}
@@ -282,4 +234,3 @@ export const TechEcosystemSection: React.FC = () => {
     </section>
   );
 };
-

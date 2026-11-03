@@ -78,3 +78,4 @@ export const LiquidCard: React.FC<LiquidCardProps> = ({
     </div>
   );
 };
+

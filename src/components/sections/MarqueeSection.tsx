@@ -1,5 +1,4 @@
-import React, { useRef, useEffect, useState } from 'react';
-import { ArrowLeftRight, Sparkles, Navigation } from 'lucide-react';
+import React, { useRef, useEffect } from 'react';
 
 const TECH_PARTNERS = [
   { name: "React Ecosystem", category: "Frontend Core", code: "REACT 18+", icon: "⚛️" },
@@ -20,18 +19,13 @@ export const MarqueeSection: React.FC = () => {
   const containerRef = useRef<HTMLDivElement>(null);
   const trackRef = useRef<HTMLDivElement>(null);
 
-  const [mouseVelocityInfo, setMouseVelocityInfo] = useState({
-    direction: 'Autopilot',
-    speedRate: '1.0x'
-  });
-
   useEffect(() => {
     const container = containerRef.current;
     const track = trackRef.current;
     if (!container || !track) return;
 
     let offset = 0;
-    let baseSpeed = 1.2; // default ambient rightward/leftward crawl
+    let baseSpeed = 1.2;
     let targetSpeed = baseSpeed;
     let currentSpeed = baseSpeed;
     let lastMouseX = 0;
@@ -44,22 +38,17 @@ export const MarqueeSection: React.FC = () => {
     const handleMouseMove = (e: MouseEvent) => {
       const rect = container.getBoundingClientRect();
       const mouseX = e.clientX - rect.left;
-      const normalizedX = (mouseX / rect.width) * 2 - 1; // -1 (far left) to +1 (far right)
+      const normalizedX = (mouseX / rect.width) * 2 - 1;
 
-      // Calculate instantaneous mouse speed
       const deltaX = e.clientX - lastMouseX;
       lastMouseX = e.clientX;
 
       // Mouse position and velocity drive target speed
-      // Moving mouse left (deltaX < 0) pushes track left; moving mouse right pushes track right!
       const impulse = deltaX * 0.45;
       const positionDrive = normalizedX * 4.5;
-      
       targetSpeed = positionDrive + impulse;
 
-      // Cap target speed to avoid dizzying jumps
       targetSpeed = Math.max(-14, Math.min(14, targetSpeed));
-
       isHovering = true;
     };
 
@@ -73,7 +62,6 @@ export const MarqueeSection: React.FC = () => {
       targetSpeed = baseSpeed;
     };
 
-    // Pointer Dragging for direct tactile feel
     const handleMouseDown = (e: MouseEvent) => {
       isDragging = true;
       dragStartX = e.clientX;
@@ -103,14 +91,10 @@ export const MarqueeSection: React.FC = () => {
     window.addEventListener('mousemove', handleWindowMouseMove);
     window.addEventListener('mouseup', handleWindowMouseUp);
 
-    let throttleCounter = 0;
-
     const render = () => {
       if (!isDragging) {
-        // Smoothly interpolate current speed towards target speed with damping
         currentSpeed += (targetSpeed - currentSpeed) * 0.08;
 
-        // If not hovering, gradually restore gentle base speed
         if (!isHovering) {
           targetSpeed = baseSpeed;
         }
@@ -118,8 +102,6 @@ export const MarqueeSection: React.FC = () => {
         offset -= currentSpeed;
       }
 
-      // Calculate the width of one single full set of partners
-      // When offset exceeds half the total duplicated track, wrap around seamlessly
       const totalWidth = track.scrollWidth / 2;
       if (totalWidth > 0) {
         if (offset < -totalWidth) {
@@ -132,16 +114,6 @@ export const MarqueeSection: React.FC = () => {
       }
 
       track.style.transform = `translate3d(${offset.toFixed(2)}px, 0, 0)`;
-
-      // Update UI Telemetry Badge
-      throttleCounter++;
-      if (throttleCounter % 8 === 0) {
-        const absSpeed = Math.abs(currentSpeed);
-        const dir = currentSpeed > 0.5 ? 'Moving Left ←' : currentSpeed < -0.5 ? 'Moving Right →' : 'Cruising';
-        const rate = `${(absSpeed / baseSpeed).toFixed(1)}x`;
-        setMouseVelocityInfo({ direction: dir, speedRate: rate });
-      }
-
       animId = requestAnimationFrame(render);
     };
 
@@ -158,37 +130,21 @@ export const MarqueeSection: React.FC = () => {
     };
   }, []);
 
-  // Triple array to ensure infinite wrapping with zero gaps
   const triplicatedPartners = [...TECH_PARTNERS, ...TECH_PARTNERS, ...TECH_PARTNERS];
 
   return (
     <section
       ref={containerRef}
-      className="relative py-20 bg-ivory border-t border-b border-softgrey overflow-hidden select-none cursor-ew-resize"
+      className="relative py-16 bg-ivory border-t border-b border-softgrey overflow-hidden select-none cursor-ew-resize"
     >
       {/* Top red reflection hairline */}
       <div className="absolute top-0 left-0 right-0 h-[1px] bg-gradient-to-r from-transparent via-brand-red/30 to-transparent" />
 
-      {/* Header with Live Mouse Direction HUD */}
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mb-10 flex flex-col sm:flex-row items-center justify-between gap-4">
-        <div>
-          <span className="text-xs font-mono font-bold text-graphite uppercase tracking-widest block">
-            INTEGRATED TECHNOLOGIES & PRODUCTION ARCHITECTURE STACK
-          </span>
-          <span className="text-[11px] font-sans text-body-muted mt-1 block">
-            * Move your cursor left and right across the track to accelerate and shift the stream
-          </span>
-        </div>
-
-        {/* Live Momentum Pill */}
-        <div className="liquid-glass-chip px-4 py-1.5 rounded-full flex items-center gap-2.5 shadow-liquid-sm">
-          <ArrowLeftRight className="w-3.5 h-3.5 text-brand-red animate-pulse" />
-          <span className="text-xs font-mono font-bold text-graphite">{mouseVelocityInfo.direction}</span>
-          <span className="h-3 w-[1px] bg-softgrey" />
-          <span className="text-[10px] font-mono font-bold text-brand-red bg-brand-red/10 px-2 py-0.5 rounded-full">
-            {mouseVelocityInfo.speedRate}
-          </span>
-        </div>
+      {/* Clean Minimal Header */}
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mb-8 text-center">
+        <span className="text-xs font-mono font-bold text-body-muted uppercase tracking-widest block">
+          Integrated Technologies & Production Architecture Stack
+        </span>
       </div>
 
       {/* Interactive Drag & Velocity Track */}

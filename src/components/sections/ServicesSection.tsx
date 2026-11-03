@@ -1,11 +1,12 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { Globe, Layers, Smartphone, TrendingUp, Users, Compass, ArrowRight } from 'lucide-react';
+import { Globe, Layers, Smartphone, TrendingUp, Users, Compass, ArrowRight, LucideIcon } from 'lucide-react';
 import { SectionHeader } from '../common/SectionHeader';
 import { LiquidCard } from '../common/LiquidCard';
+import { FlipIconBadge } from '../common/FlipIconBadge';
 import { SERVICES_DATA } from '../../data/services';
 
-const iconMap: Record<string, React.ElementType> = {
+const iconMap: Record<string, LucideIcon> = {
   Globe,
   Layers,
   Smartphone,
@@ -49,11 +50,9 @@ export const ServicesSection: React.FC = () => {
                 className="p-8 sm:p-9 flex flex-col justify-between group"
               >
                 <div>
-                  {/* Top Bar: Icon + Index */}
+                  {/* Top Bar: 3D Flipping Icon + Index */}
                   <div className="flex items-center justify-between mb-6">
-                    <div className="w-12 h-12 rounded-2xl bg-brand-red/10 border border-brand-red/20 group-hover:bg-brand-red group-hover:border-brand-red flex items-center justify-center text-brand-red group-hover:text-white transition-all duration-300 shadow-sm">
-                      <Icon className="w-6 h-6 transition-transform duration-300 group-hover:scale-110" />
-                    </div>
+                    <FlipIconBadge icon={Icon} size="md" />
                     <span className="font-mono text-xs text-body-muted font-bold">
                       0{index + 1}
                     </span>

@@ -1,10 +1,11 @@
 import React from 'react';
-import { ShieldCheck, CheckCircle2, Cpu, Zap } from 'lucide-react';
+import { ShieldCheck, CheckCircle2, Cpu, Zap, LucideIcon } from 'lucide-react';
 import { SectionHeader } from '../common/SectionHeader';
 import { LiquidCard } from '../common/LiquidCard';
+import { FlipIconBadge } from '../common/FlipIconBadge';
 import { DIFFERENTIATORS_DATA } from '../../data/differentiators';
 
-const iconMap: Record<string, React.ElementType> = {
+const iconMap: Record<string, LucideIcon> = {
   ShieldCheck,
   CheckCircle2,
   Cpu,
@@ -36,14 +37,12 @@ export const WhyUsSection: React.FC = () => {
                 className="p-8 flex flex-col justify-between group"
               >
                 <div>
-                  {/* Top Bar: Number & Icon */}
+                  {/* Top Bar: Number & Interactive 3D Flipping Icon */}
                   <div className="flex items-center justify-between mb-8">
                     <span className="font-mono text-3xl font-black text-brand-red">
                       {diff.number}
                     </span>
-                    <div className="w-11 h-11 rounded-2xl bg-brand-red/10 border border-brand-red/20 group-hover:bg-brand-red group-hover:text-white flex items-center justify-center text-brand-red transition-all shadow-sm">
-                      <Icon className="w-5 h-5" />
-                    </div>
+                    <FlipIconBadge icon={Icon} size="md" />
                   </div>
 
                   {/* Title */}
