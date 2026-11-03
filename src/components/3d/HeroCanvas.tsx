@@ -1,98 +1,138 @@
-import React, { useRef, useMemo, Suspense, useEffect, useState } from 'react';
+import React, { useRef, Suspense, useEffect, useState } from 'react';
 import { Canvas, useFrame } from '@react-three/fiber';
 import * as THREE from 'three';
 import { HeroCanvasFallback } from './HeroCanvasFallback';
 
-// Interactive Red Sculpture Mesh
-function RedSculpture() {
+// Artistic Red Liquid-Glass Sculptural Ribbon
+function LiquidGlassRibbon() {
   const meshRef = useRef<THREE.Mesh>(null);
-  const ringRef = useRef<THREE.Mesh>(null);
-  const coreRef = useRef<THREE.Mesh>(null);
 
   useFrame((state, delta) => {
-    if (meshRef.current) {
-      // Base rotation
-      meshRef.current.rotation.y += delta * 0.35;
-      meshRef.current.rotation.x += delta * 0.15;
+    if (!meshRef.current) return;
+    const t = state.clock.getElapsedTime();
 
-      // Mouse reactive inertia damping
-      const targetX = state.pointer.y * 0.4;
-      const targetY = state.pointer.x * 0.5;
-      meshRef.current.rotation.x = THREE.MathUtils.lerp(meshRef.current.rotation.x, meshRef.current.rotation.x + targetX * 0.05, 0.1);
-      meshRef.current.rotation.y = THREE.MathUtils.lerp(meshRef.current.rotation.y, meshRef.current.rotation.y + targetY * 0.05, 0.1);
-    }
+    // Fluid continuous base rotation
+    meshRef.current.rotation.y += delta * 0.28;
+    meshRef.current.rotation.x = Math.sin(t * 0.4) * 0.25;
+    meshRef.current.rotation.z = Math.cos(t * 0.3) * 0.15;
 
-    if (ringRef.current) {
-      ringRef.current.rotation.z -= delta * 0.2;
-      ringRef.current.rotation.x += delta * 0.1;
-    }
-
-    if (coreRef.current) {
-      // Subtle breathing pulse
-      const t = state.clock.getElapsedTime();
-      const scale = 1 + Math.sin(t * 2) * 0.06;
-      coreRef.current.scale.set(scale, scale, scale);
-    }
+    // Smooth mouse parallax damping
+    const targetX = state.pointer.y * 0.35;
+    const targetY = state.pointer.x * 0.45;
+    meshRef.current.rotation.x = THREE.MathUtils.lerp(meshRef.current.rotation.x, meshRef.current.rotation.x + targetX * 0.05, 0.08);
+    meshRef.current.rotation.y = THREE.MathUtils.lerp(meshRef.current.rotation.y, meshRef.current.rotation.y + targetY * 0.05, 0.08);
   });
 
   return (
-    <group position={[0, 0, 0]}>
-      {/* Central Glowing Core */}
-      <mesh ref={coreRef}>
-        <sphereGeometry args={[0.55, 32, 32]} />
-        <meshBasicMaterial color="#FF2E2E" wireframe={true} transparent opacity={0.3} />
-      </mesh>
-
-      {/* Main Ruby Metallic Sculpture */}
-      <mesh ref={meshRef} castShadow receiveShadow>
-        <torusKnotGeometry args={[1.1, 0.35, 128, 32, 2, 3]} />
-        <meshStandardMaterial
-          color="#E00000"
-          metalness={0.88}
-          roughness={0.16}
-          emissive="#500000"
-          emissiveIntensity={0.25}
-        />
-      </mesh>
-
-      {/* Outer Floating Geometric Orbit Ring */}
-      <mesh ref={ringRef} rotation={[Math.PI / 4, 0, 0]}>
-        <torusGeometry args={[2.0, 0.015, 16, 100]} />
-        <meshStandardMaterial color="#FFFFFF" metalness={0.9} roughness={0.1} transparent opacity={0.4} />
-      </mesh>
-    </group>
+    <mesh ref={meshRef} castShadow receiveShadow position={[0, 0, 0]}>
+      {/* Complex sculptural torus knot representing intertwined liquid ribbons */}
+      <torusKnotGeometry args={[1.2, 0.38, 160, 48, 2, 5]} />
+      <meshPhysicalMaterial
+        color="#E00000"
+        emissive="#4A0000"
+        emissiveIntensity={0.2}
+        roughness={0.12}
+        metalness={0.08}
+        transmission={0.92}
+        ior={1.54}
+        thickness={1.4}
+        specularIntensity={1.0}
+        specularColor="#FFFFFF"
+        clearcoat={1.0}
+        clearcoatRoughness={0.1}
+        transparent={true}
+        opacity={0.95}
+      />
+    </mesh>
   );
 }
 
-// Ambient Floating Micro Particles
-function ParticleCloud({ count = 180 }: { count?: number }) {
+// Intertwined Liquid Chrome Orbital Ring
+function ChromeOrbitalRibbon() {
+  const ringRef = useRef<THREE.Mesh>(null);
+
+  useFrame((state, delta) => {
+    if (!ringRef.current) return;
+    const t = state.clock.getElapsedTime();
+
+    ringRef.current.rotation.z -= delta * 0.22;
+    ringRef.current.rotation.x = Math.cos(t * 0.35) * 0.4;
+    ringRef.current.rotation.y += delta * 0.15;
+
+    // Responsive position float
+    ringRef.current.position.y = Math.sin(t * 0.8) * 0.08;
+  });
+
+  return (
+    <mesh ref={ringRef} rotation={[Math.PI / 3, 0, Math.PI / 6]}>
+      <torusGeometry args={[1.9, 0.04, 32, 120]} />
+      <meshStandardMaterial
+        color="#FAFAFA"
+        metalness={0.98}
+        roughness={0.06}
+        envMapIntensity={2.2}
+      />
+    </mesh>
+  );
+}
+
+// Inner Geometric Core with Ruby Caustics
+function GeometricCore() {
+  const coreRef = useRef<THREE.Mesh>(null);
+
+  useFrame((state, delta) => {
+    if (!coreRef.current) return;
+    const t = state.clock.getElapsedTime();
+    coreRef.current.rotation.y -= delta * 0.5;
+    coreRef.current.rotation.x += delta * 0.3;
+
+    const s = 0.55 + Math.sin(t * 1.5) * 0.05;
+    coreRef.current.scale.set(s, s, s);
+  });
+
+  return (
+    <mesh ref={coreRef}>
+      <icosahedronGeometry args={[0.55, 1]} />
+      <meshStandardMaterial
+        color="#FFFFFF"
+        emissive="#FF2B2B"
+        emissiveIntensity={1.2}
+        wireframe={true}
+        transparent={true}
+        opacity={0.45}
+      />
+    </mesh>
+  );
+}
+
+// Floating Ambient Micro-Specks
+function AmbientSpecks({ count = 90 }: { count?: number }) {
   const pointsRef = useRef<THREE.Points>(null);
 
-  const [positions, colors] = useMemo(() => {
+  const [positions, colors] = React.useMemo(() => {
     const pos = new Float32Array(count * 3);
-    const col = new Float32Array(count * 3);
-    const redColor = new THREE.Color('#E00000');
-    const whiteColor = new THREE.Color('#FFFFFF');
+    const cols = new Float32Array(count * 3);
+    const red = new THREE.Color('#E00000');
+    const dark = new THREE.Color('#171717');
 
     for (let i = 0; i < count; i++) {
-      pos[i * 3] = (Math.random() - 0.5) * 8;
-      pos[i * 3 + 1] = (Math.random() - 0.5) * 8;
-      pos[i * 3 + 2] = (Math.random() - 0.5) * 6;
+      pos[i * 3] = (Math.random() - 0.5) * 7;
+      pos[i * 3 + 1] = (Math.random() - 0.5) * 7;
+      pos[i * 3 + 2] = (Math.random() - 0.5) * 5;
 
-      const isRed = Math.random() > 0.4;
-      const c = isRed ? redColor : whiteColor;
-      col[i * 3] = c.r;
-      col[i * 3 + 1] = c.g;
-      col[i * 3 + 2] = c.b;
+      const isRed = Math.random() > 0.45;
+      const c = isRed ? red : dark;
+      cols[i * 3] = c.r;
+      cols[i * 3 + 1] = c.g;
+      cols[i * 3 + 2] = c.b;
     }
-
-    return [pos, col];
+    return [pos, cols];
   }, [count]);
 
   useFrame((_, delta) => {
     if (pointsRef.current) {
-      pointsRef.current.rotation.y += delta * 0.04;
-      pointsRef.current.rotation.x += delta * 0.02;
+      pointsRef.current.rotation.y += delta * 0.03;
+      pointsRef.current.rotation.x += delta * 0.015;
     }
   });
 
@@ -113,27 +153,38 @@ function ParticleCloud({ count = 180 }: { count?: number }) {
         />
       </bufferGeometry>
       <pointsMaterial
-        size={0.04}
+        size={0.035}
         vertexColors
         transparent
-        opacity={0.65}
+        opacity={0.45}
         sizeAttenuation
       />
     </points>
   );
 }
 
-// Scene Root with Lights
-function Scene() {
+// Scene Root with Realistic Studio Lighting
+function StudioLightingScene() {
   return (
     <>
-      <ambientLight intensity={0.5} />
-      <directionalLight position={[6, 8, 5]} intensity={1.8} color="#FFFFFF" />
-      <directionalLight position={[-6, -4, -3]} intensity={0.6} color="#FF4D4D" />
-      <pointLight position={[0, 0, 0]} intensity={3.5} color="#E00000" distance={6} />
+      <ambientLight intensity={0.9} color="#FFFFFF" />
       
-      <RedSculpture />
-      <ParticleCloud count={200} />
+      {/* High-Contrast Key Light */}
+      <directionalLight position={[6, 9, 7]} intensity={2.2} color="#FFFFFF" castShadow />
+      
+      {/* Warm Fill Light */}
+      <directionalLight position={[-6, -5, -4]} intensity={1.0} color="#F6F5F2" />
+      
+      {/* Internal Crimson Point Light (illuminates glass from within) */}
+      <pointLight position={[0, 0, 0]} intensity={3.5} color="#E00000" distance={5} />
+      
+      {/* Sharp Specular Rim Light */}
+      <pointLight position={[2, 4, -3]} intensity={2.0} color="#FFFFFF" distance={7} />
+
+      <LiquidGlassRibbon />
+      <ChromeOrbitalRibbon />
+      <GeometricCore />
+      <AmbientSpecks count={90} />
     </>
   );
 }
@@ -143,11 +194,9 @@ export const HeroCanvas: React.FC = () => {
   const [prefersReducedMotion, setPrefersReducedMotion] = useState(false);
 
   useEffect(() => {
-    // Check user preference for reduced motion
     const motionQuery = window.matchMedia('(prefers-reduced-motion: reduce)');
     setPrefersReducedMotion(motionQuery.matches);
 
-    // Check basic WebGL support
     try {
       const canvas = document.createElement('canvas');
       const gl = canvas.getContext('webgl') || canvas.getContext('experimental-webgl');
@@ -162,21 +211,24 @@ export const HeroCanvas: React.FC = () => {
   }
 
   return (
-    <div className="relative w-full h-[380px] sm:h-[460px] lg:h-[540px] flex items-center justify-center">
-      {/* Background Soft Glow */}
-      <div className="absolute w-72 h-72 sm:w-96 sm:h-96 rounded-full bg-brand-red/15 blur-[100px] pointer-events-none" />
+    <div className="relative w-full h-[400px] sm:h-[480px] lg:h-[580px] flex items-center justify-center">
+      {/* Warm Red Ambient Halo */}
+      <div className="absolute w-80 h-80 sm:w-[420px] sm:h-[420px] rounded-full bg-brand-red/10 blur-[100px] pointer-events-none" />
 
       <Suspense fallback={<HeroCanvasFallback />}>
         <Canvas
-          camera={{ position: [0, 0, 4.6], fov: 45 }}
-          gl={{ antialias: true, alpha: true, powerPreference: 'high-performance' }}
+          camera={{ position: [0, 0, 4.8], fov: 42 }}
+          gl={{
+            antialias: true,
+            alpha: true,
+            powerPreference: 'high-performance'
+          }}
           dpr={[1, 2]}
           className="w-full h-full cursor-grab active:cursor-grabbing"
         >
-          <Scene />
+          <StudioLightingScene />
         </Canvas>
       </Suspense>
     </div>
   );
 };
-

@@ -15,18 +15,17 @@ export const PageLayout: React.FC<PageLayoutProps> = ({ children }) => {
   }, [pathname]);
 
   return (
-    <div className="min-h-screen flex flex-col bg-dark-base text-light-primary antialiased selection:bg-brand-red selection:text-white">
-      {/* Section A: Premium Sticky Navbar */}
+    <div className="min-h-screen flex flex-col bg-ivory text-graphite antialiased selection:bg-brand-red selection:text-white">
+      {/* Floating Liquid-Glass Navbar */}
       <Navbar />
 
-      {/* Main Page Content */}
+      {/* Main Viewport Content */}
       <main className="flex-grow">
         {children}
       </main>
 
-      {/* Section K: Complete Responsive Footer */}
+      {/* Complete Branded Footer */}
       <Footer />
     </div>
   );
 };
-

@@ -9,58 +9,60 @@ export default {
       colors: {
         brand: {
           red: '#E00000',
-          'red-light': '#FF2E2E',
-          'red-dark': '#9E0000',
-          'red-glow': 'rgba(224, 0, 0, 0.4)',
-          'red-subtle': 'rgba(224, 0, 0, 0.08)',
+          'red-deep': '#A90000',
+          'red-light': '#FF2B2B',
+          'red-glow': 'rgba(224, 0, 0, 0.28)',
+          'red-tint': 'rgba(224, 0, 0, 0.05)',
         },
-        dark: {
-          base: '#090909',
-          surface1: '#121212',
-          surface2: '#1A1A1A',
-          surface3: '#242424',
-          border: 'rgba(255, 255, 255, 0.08)',
-          'border-hover': 'rgba(255, 255, 255, 0.16)',
+        ivory: {
+          DEFAULT: '#F6F5F2',
+          light: '#FAFAF8',
+          dark: '#EDECE8',
         },
-        light: {
-          primary: '#F5F5F5',
-          secondary: '#D4D4D4',
-          muted: '#8E8E8E',
-          dim: '#555555',
+        graphite: {
+          DEFAULT: '#171717',
+          deep: '#0D0D0D',
+          light: '#242424',
+          subtle: '#333333',
+        },
+        softgrey: {
+          DEFAULT: '#E8E6E2',
+          light: '#F0EFEA',
+          dark: '#D8D5CF',
+        },
+        body: {
+          text: '#4A4A4A',
+          muted: '#7E7E7E',
+          light: '#9E9E9E',
         }
       },
       fontFamily: {
-        display: ['Syne', 'Space Grotesk', 'sans-serif'],
+        display: ['Syne', 'sans-serif'],
         sans: ['Plus Jakarta Sans', 'Inter', 'sans-serif'],
         mono: ['JetBrains Mono', 'monospace'],
       },
       boxShadow: {
-        'red-sm': '0 0 15px -3px rgba(224, 0, 0, 0.3)',
-        'red-md': '0 0 30px -5px rgba(224, 0, 0, 0.4)',
-        'red-lg': '0 0 50px -10px rgba(224, 0, 0, 0.5)',
-      },
-      animation: {
-        'marquee': 'marquee 35s linear infinite',
-        'marquee-reverse': 'marquee-reverse 35s linear infinite',
-        'pulse-slow': 'pulse 4s cubic-bezier(0.4, 0, 0.6, 1) infinite',
-        'float': 'float 6s ease-in-out infinite',
+        'liquid-sm': '0 8px 24px -6px rgba(23, 23, 23, 0.06)',
+        'liquid-md': '0 16px 36px -10px rgba(23, 23, 23, 0.08), 0 0 0 1px rgba(255, 255, 255, 0.9) inset',
+        'liquid-lg': '0 24px 48px -12px rgba(23, 23, 23, 0.12), 0 0 0 1px rgba(255, 255, 255, 0.95) inset',
+        'liquid-red': '0 16px 36px -8px rgba(224, 0, 0, 0.22), 0 0 0 1px rgba(255, 255, 255, 0.5) inset',
+        'soft-glow': '0 0 40px -10px rgba(224, 0, 0, 0.35)',
       },
       keyframes: {
-        marquee: {
-          '0%': { transform: 'translateX(0%)' },
-          '100%': { transform: 'translateX(-50%)' },
-        },
-        'marquee-reverse': {
-          '0%': { transform: 'translateX(-50%)' },
-          '100%': { transform: 'translateX(0%)' },
-        },
         float: {
-          '0%, 100%': { transform: 'translateY(0px)' },
-          '50%': { transform: 'translateY(-10px)' },
+          '0%, 100%': { transform: 'translateY(0px) rotate(0deg)' },
+          '50%': { transform: 'translateY(-12px) rotate(1deg)' },
+        },
+        'pulse-subtle': {
+          '0%, 100%': { opacity: '0.8', transform: 'scale(1)' },
+          '50%': { opacity: '1', transform: 'scale(1.04)' },
         }
+      },
+      animation: {
+        float: 'float 7s ease-in-out infinite',
+        'pulse-subtle': 'pulse-subtle 4s ease-in-out infinite',
       }
     },
   },
   plugins: [],
 }
-

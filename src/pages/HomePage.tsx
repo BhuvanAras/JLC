@@ -1,5 +1,6 @@
 import React from 'react';
 import { HeroSection } from '../components/sections/HeroSection';
+import { TechEcosystemSection } from '../components/sections/TechEcosystemSection';
 import { IntroSection } from '../components/sections/IntroSection';
 import { ServicesSection } from '../components/sections/ServicesSection';
 import { ProjectsSection } from '../components/sections/ProjectsSection';
@@ -11,34 +12,36 @@ import { ContactCTASection } from '../components/sections/ContactCTASection';
 
 export const HomePage: React.FC = () => {
   return (
-    <div className="relative w-full">
-      {/* Section B: Cinematic Hero with 3D Abstract Sculpture */}
+    <div className="relative w-full bg-ivory">
+      {/* Section 02: Cinematic Luxury Hero with 3D Liquid-Glass Sculpture */}
       <HeroSection />
 
-      {/* Section C: Company Introduction (Split Editorial) */}
+      {/* Section 03 & 04: Mouse-Velocity Interactive Technology Ecosystem */}
+      <TechEcosystemSection />
+
+      {/* Section 05: The Contrast Chamber — Company Introduction */}
       <IntroSection />
 
-      {/* Section D: Six Interactive Service Cards */}
+      {/* Section 06: Six Premium Interactive Service Cards */}
       <ServicesSection />
 
-      {/* Section E: Featured Projects with Image Reveals */}
+      {/* Section 07: Featured Work & Systems */}
       <ProjectsSection />
 
-      {/* Section F: Partner & Client Tech Marquee */}
+      {/* Section 08: Technology & Client Marquee */}
       <MarqueeSection />
 
-      {/* Section G: Why Choose JL Corp (4 Differentiators) */}
+      {/* Section 09: Why Choose JL Corp (4 Core Differentiators) */}
       <WhyUsSection />
 
-      {/* Section H: 5-Stage Engineering Process Timeline */}
+      {/* Section 10: 5-Stage Engineering Process Roadmap */}
       <ProcessSection />
 
-      {/* Section I: Client Quality Charter & Verified Results */}
+      {/* Section 11: Client Quality Charter & NDA Commitment */}
       <TrustSection />
 
-      {/* Section J: High-Impact Red Luminescence Contact CTA */}
+      {/* Section 12: High-Impact Red Luminescence Contact CTA */}
       <ContactCTASection />
     </div>
   );
 };
-
