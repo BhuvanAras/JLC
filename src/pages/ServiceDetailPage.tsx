@@ -1,6 +1,7 @@
 import React from 'react';
 import { useParams, Link, Navigate } from 'react-router-dom';
 import { Globe, Layers, Smartphone, TrendingUp, Users, Compass, ArrowLeft, CheckCircle2, ShieldCheck, Zap, ArrowUpRight } from 'lucide-react';
+import { ArchitectureDiagram } from '../components/common/ArchitectureDiagram';
 import { SERVICES_DATA } from '../data/services';
 
 const iconMap: Record<string, React.ElementType> = {
@@ -86,6 +87,9 @@ export const ServiceDetailPage: React.FC = () => {
             </div>
           </div>
         </div>
+
+        {/* Live Interactive Architecture System Diagram */}
+        <ArchitectureDiagram serviceTitle={service.title} />
 
         {/* Capabilities Breakdown */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-16">

@@ -1,10 +1,13 @@
 import React, { useRef, Suspense, useEffect, useState } from 'react';
 import { Canvas, useFrame } from '@react-three/fiber';
 import * as THREE from 'three';
+import { Sparkles, Layers, Box } from 'lucide-react';
 import { HeroCanvasFallback } from './HeroCanvasFallback';
 
-// Artistic Red Liquid-Glass Sculptural Ribbon
-function LiquidGlassRibbon() {
+type MaterialMode = 'glass' | 'chrome' | 'wireframe';
+
+// Artistic Red Liquid-Glass Sculptural Ribbon with dynamic material modes
+function LiquidGlassRibbon({ mode }: { mode: MaterialMode }) {
   const meshRef = useRef<THREE.Mesh>(null);
 
   useFrame((state, delta) => {
@@ -25,24 +28,45 @@ function LiquidGlassRibbon() {
 
   return (
     <mesh ref={meshRef} castShadow receiveShadow position={[0, 0, 0]}>
-      {/* Complex sculptural torus knot representing intertwined liquid ribbons */}
       <torusKnotGeometry args={[1.2, 0.38, 160, 48, 2, 5]} />
-      <meshPhysicalMaterial
-        color="#E00000"
-        emissive="#4A0000"
-        emissiveIntensity={0.2}
-        roughness={0.12}
-        metalness={0.08}
-        transmission={0.92}
-        ior={1.54}
-        thickness={1.4}
-        specularIntensity={1.0}
-        specularColor="#FFFFFF"
-        clearcoat={1.0}
-        clearcoatRoughness={0.1}
-        transparent={true}
-        opacity={0.95}
-      />
+      
+      {mode === 'glass' && (
+        <meshPhysicalMaterial
+          color="#E00000"
+          emissive="#4A0000"
+          emissiveIntensity={0.25}
+          roughness={0.12}
+          metalness={0.08}
+          transmission={0.92}
+          ior={1.54}
+          thickness={1.4}
+          specularIntensity={1.0}
+          specularColor="#FFFFFF"
+          clearcoat={1.0}
+          clearcoatRoughness={0.1}
+          transparent={true}
+          opacity={0.95}
+        />
+      )}
+
+      {mode === 'chrome' && (
+        <meshStandardMaterial
+          color="#FAFAFA"
+          metalness={0.98}
+          roughness={0.08}
+          envMapIntensity={2.5}
+        />
+      )}
+
+      {mode === 'wireframe' && (
+        <meshStandardMaterial
+          color="#E00000"
+          emissive="#FF2B2B"
+          emissiveIntensity={1.2}
+          wireframe={true}
+          roughness={0.2}
+        />
+      )}
     </mesh>
   );
 }
@@ -58,8 +82,6 @@ function ChromeOrbitalRibbon() {
     ringRef.current.rotation.z -= delta * 0.22;
     ringRef.current.rotation.x = Math.cos(t * 0.35) * 0.4;
     ringRef.current.rotation.y += delta * 0.15;
-
-    // Responsive position float
     ringRef.current.position.y = Math.sin(t * 0.8) * 0.08;
   });
 
@@ -76,8 +98,8 @@ function ChromeOrbitalRibbon() {
   );
 }
 
-// Inner Geometric Core with Ruby Caustics
-function GeometricCore() {
+// Inner Geometric Core
+function GeometricCore({ mode }: { mode: MaterialMode }) {
   const coreRef = useRef<THREE.Mesh>(null);
 
   useFrame((state, delta) => {
@@ -95,8 +117,8 @@ function GeometricCore() {
       <icosahedronGeometry args={[0.55, 1]} />
       <meshStandardMaterial
         color="#FFFFFF"
-        emissive="#FF2B2B"
-        emissiveIntensity={1.2}
+        emissive={mode === 'chrome' ? '#3B82F6' : '#FF2B2B'}
+        emissiveIntensity={mode === 'wireframe' ? 0.3 : 1.2}
         wireframe={true}
         transparent={true}
         opacity={0.45}
@@ -163,27 +185,19 @@ function AmbientSpecks({ count = 90 }: { count?: number }) {
   );
 }
 
-// Scene Root with Realistic Studio Lighting
-function StudioLightingScene() {
+// Scene Root with Studio Lighting
+function StudioLightingScene({ mode }: { mode: MaterialMode }) {
   return (
     <>
       <ambientLight intensity={0.9} color="#FFFFFF" />
-      
-      {/* High-Contrast Key Light */}
       <directionalLight position={[6, 9, 7]} intensity={2.2} color="#FFFFFF" castShadow />
-      
-      {/* Warm Fill Light */}
       <directionalLight position={[-6, -5, -4]} intensity={1.0} color="#F6F5F2" />
-      
-      {/* Internal Crimson Point Light (illuminates glass from within) */}
-      <pointLight position={[0, 0, 0]} intensity={3.5} color="#E00000" distance={5} />
-      
-      {/* Sharp Specular Rim Light */}
+      <pointLight position={[0, 0, 0]} intensity={3.5} color={mode === 'chrome' ? '#3B82F6' : '#E00000'} distance={5} />
       <pointLight position={[2, 4, -3]} intensity={2.0} color="#FFFFFF" distance={7} />
 
-      <LiquidGlassRibbon />
+      <LiquidGlassRibbon mode={mode} />
       <ChromeOrbitalRibbon />
-      <GeometricCore />
+      <GeometricCore mode={mode} />
       <AmbientSpecks count={90} />
     </>
   );
@@ -192,6 +206,7 @@ function StudioLightingScene() {
 export const HeroCanvas: React.FC = () => {
   const [hasWebGL, setHasWebGL] = useState(true);
   const [prefersReducedMotion, setPrefersReducedMotion] = useState(false);
+  const [materialMode, setMaterialMode] = useState<MaterialMode>('glass');
 
   useEffect(() => {
     const motionQuery = window.matchMedia('(prefers-reduced-motion: reduce)');
@@ -211,10 +226,11 @@ export const HeroCanvas: React.FC = () => {
   }
 
   return (
-    <div className="relative w-full h-[400px] sm:h-[480px] lg:h-[580px] flex items-center justify-center">
-      {/* Warm Red Ambient Halo */}
+    <div className="relative w-full h-[420px] sm:h-[480px] lg:h-[580px] flex items-center justify-center">
+      {/* Warm Ambient Halo */}
       <div className="absolute w-80 h-80 sm:w-[420px] sm:h-[420px] rounded-full bg-brand-red/10 blur-[100px] pointer-events-none" />
 
+      {/* 3D WebGL Canvas */}
       <Suspense fallback={<HeroCanvasFallback />}>
         <Canvas
           camera={{ position: [0, 0, 4.8], fov: 42 }}
@@ -226,9 +242,45 @@ export const HeroCanvas: React.FC = () => {
           dpr={[1, 2]}
           className="w-full h-full cursor-grab active:cursor-grabbing"
         >
-          <StudioLightingScene />
+          <StudioLightingScene mode={materialMode} />
         </Canvas>
       </Suspense>
+
+      {/* Interactive 3D Shader Switcher Pill */}
+      <div className="absolute bottom-2 left-1/2 -translate-x-1/2 z-20 liquid-glass-chip p-1 rounded-full flex items-center gap-1 shadow-liquid-md border border-white/95">
+        <button
+          onClick={() => setMaterialMode('glass')}
+          className={`px-3 py-1 rounded-full text-[10px] font-mono font-bold uppercase tracking-wider transition-all cursor-pointer ${
+            materialMode === 'glass'
+              ? 'bg-brand-red text-white shadow-liquid-red'
+              : 'text-graphite hover:bg-black/5'
+          }`}
+        >
+          Ruby Glass
+        </button>
+
+        <button
+          onClick={() => setMaterialMode('chrome')}
+          className={`px-3 py-1 rounded-full text-[10px] font-mono font-bold uppercase tracking-wider transition-all cursor-pointer ${
+            materialMode === 'chrome'
+              ? 'bg-graphite text-white shadow-sm'
+              : 'text-graphite hover:bg-black/5'
+          }`}
+        >
+          Chrome
+        </button>
+
+        <button
+          onClick={() => setMaterialMode('wireframe')}
+          className={`px-3 py-1 rounded-full text-[10px] font-mono font-bold uppercase tracking-wider transition-all cursor-pointer ${
+            materialMode === 'wireframe'
+              ? 'bg-brand-red text-white shadow-liquid-red'
+              : 'text-graphite hover:bg-black/5'
+          }`}
+        >
+          CAD Wireframe
+        </button>
+      </div>
     </div>
   );
 };

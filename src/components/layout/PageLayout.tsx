@@ -2,6 +2,7 @@ import React, { useEffect } from 'react';
 import { useLocation } from 'react-router-dom';
 import { Navbar } from './Navbar';
 import { Footer } from './Footer';
+import { WhatsAppButton } from '../common/WhatsAppButton';
 
 interface PageLayoutProps {
   children: React.ReactNode;
@@ -23,6 +24,9 @@ export const PageLayout: React.FC<PageLayoutProps> = ({ children }) => {
       <main className="flex-grow relative z-10">
         {children}
       </main>
+
+      {/* Instant WhatsApp Direct Technical Consultation */}
+      <WhatsAppButton />
 
       {/* Complete Branded Footer */}
       <Footer />

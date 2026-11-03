@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { Mail, Phone, MapPin, Send, CheckCircle2, Clock, ShieldCheck, ArrowUpRight } from 'lucide-react';
 import { SectionHeader } from '../components/common/SectionHeader';
+import { ProjectEstimator } from '../components/common/ProjectEstimator';
 import { COMPANY_DATA } from '../data/company';
 import { SERVICES_DATA } from '../data/services';
 
@@ -20,6 +21,7 @@ export const ContactPage: React.FC = () => {
   const {
     register,
     handleSubmit,
+    setValue,
     reset,
     formState: { errors }
   } = useForm<ContactFormData>({
@@ -32,6 +34,15 @@ export const ContactPage: React.FC = () => {
     }
   });
 
+  const handleApplyEstimate = (summary: string) => {
+    setValue('message', summary);
+    // Smooth scroll down to the form
+    const formElement = document.getElementById('consultation-form');
+    if (formElement) {
+      formElement.scrollIntoView({ behavior: 'smooth' });
+    }
+  };
+
   const onSubmit = (data: ContactFormData) => {
     setIsSubmitting(true);
 
@@ -39,7 +50,6 @@ export const ContactPage: React.FC = () => {
       setIsSubmitting(false);
       setSubmitted(true);
 
-      // Trigger pre-filled direct mail client
       const mailtoUrl = `mailto:${COMPANY_DATA.contact.email}?subject=Project Consultation Inquiry from ${encodeURIComponent(data.fullName)}&body=${encodeURIComponent(
         `Client Name: ${data.fullName}\nEmail: ${data.email}\nPhone: ${data.phone}\nService Interest: ${data.service}\n\nProject Scope & Objectives:\n${data.message}`
       )}`;
@@ -50,7 +60,7 @@ export const ContactPage: React.FC = () => {
 
   return (
     <div className="pt-32 pb-24 bg-ivory">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mb-16">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mb-12">
         <SectionHeader
           badgeText="START AN ENGAGEMENT"
           title="Direct Technical Consultation"
@@ -59,7 +69,12 @@ export const ContactPage: React.FC = () => {
         />
       </div>
 
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      {/* Interactive Scope & Timeline Estimator */}
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mb-16">
+        <ProjectEstimator onApplyEstimate={handleApplyEstimate} />
+      </div>
+
+      <div id="consultation-form" className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-12">
           
           {/* Contact Details & Headquarters (5 Cols) */}
@@ -164,7 +179,7 @@ export const ContactPage: React.FC = () => {
                   </p>
                   <button
                     onClick={() => setSubmitted(false)}
-                    className="mt-4 px-6 py-2.5 rounded-xl bg-graphite text-white text-xs font-mono font-bold uppercase tracking-wider"
+                    className="mt-4 px-6 py-2.5 rounded-xl bg-graphite text-white text-xs font-mono font-bold uppercase tracking-wider cursor-pointer"
                   >
                     Draft Another Consultation
                   </button>
@@ -173,7 +188,7 @@ export const ContactPage: React.FC = () => {
                 <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
                   <div>
                     <h3 className="font-display text-xl font-bold text-graphite">
-                      Project Specification Form
+                      Technical Consultation Form
                     </h3>
                     <p className="text-xs text-body-muted mt-1">
                       Provide your parameters below to receive our technical feedback and architectural estimation.
@@ -265,7 +280,7 @@ export const ContactPage: React.FC = () => {
                       Project Scope & Expected Milestones *
                     </label>
                     <textarea
-                      rows={4}
+                      rows={5}
                       {...register('message', {
                         required: 'Please outline your project requirements',
                         minLength: {
@@ -274,7 +289,7 @@ export const ContactPage: React.FC = () => {
                         }
                       })}
                       placeholder="Outline your requirements, current architecture, target audience, and expected delivery milestone..."
-                      className={`w-full px-4 py-3.5 rounded-xl bg-white border text-sm text-graphite focus:outline-none transition-colors shadow-sm ${
+                      className={`w-full px-4 py-3.5 rounded-xl bg-white border text-sm text-graphite focus:outline-none transition-colors shadow-sm font-sans ${
                         errors.message ? 'border-brand-red' : 'border-softgrey focus:border-brand-red'
                       }`}
                     />
@@ -289,12 +304,12 @@ export const ContactPage: React.FC = () => {
                     className="w-full py-4 rounded-2xl bg-brand-red hover:bg-brand-red-light text-white font-bold text-sm tracking-wide shadow-liquid-red hover:shadow-soft-glow transition-all duration-300 flex items-center justify-center gap-2 cursor-pointer disabled:opacity-50"
                   >
                     <Send className="w-4 h-4" />
-                    <span>{isSubmitting ? 'Transmitting Inquiries...' : 'Transmit Project Inquiry'}</span>
+                    <span>{isSubmitting ? 'Transmitting Inquiries...' : 'Transmit Technical Inquiry'}</span>
                   </button>
 
                   <div className="flex items-center justify-between text-[11px] font-mono text-body-muted pt-1">
                     <span>* Form verified with React Hook Form</span>
-                    <span>100% Privacy & Zero Spam</span>
+                    <span>100% Privacy & Mutual NDA</span>
                   </div>
                 </form>
               )}
